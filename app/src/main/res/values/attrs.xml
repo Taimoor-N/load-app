@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LoadingButton">
+        <attr name="arc_color" format="color"/>
         <attr name="btn_color" format="color"/>
         <attr name="btn_color_loading" format="color"/>
         <attr name="text_color" format="color"/>
