@@ -18,11 +18,12 @@ class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    private lateinit var valueAnimator : ValueAnimator
+    private lateinit var arcRect : RectF
+
     private var widthSize = 0
     private var heightSize = 0
     private var arcRadius = 0f
-
-    private val valueAnimator : ValueAnimator
 
     private var loadingProgress = 0f
 
@@ -38,10 +39,19 @@ class LoadingButton @JvmOverloads constructor(
         typeface = Typeface.create( "", Typeface.BOLD)
     }
 
-    private lateinit var arcRect : RectF
 
     private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { p, old, new ->
-
+        when(new) {
+            ButtonState.Clicked -> {
+                // Do nothing
+            }
+            ButtonState.Loading -> {
+                valueAnimator.start()
+            }
+            ButtonState.Completed -> {
+                valueAnimator.end()
+            }
+        }
     }
 
     private val updateListener = ValueAnimator.AnimatorUpdateListener {
@@ -106,12 +116,14 @@ class LoadingButton @JvmOverloads constructor(
             heightSize/2 + arcRadius)
     }
 
-    override fun performClick(): Boolean {
-        if (buttonState == ButtonState.Completed) {
-            buttonState = ButtonState.Loading
-            valueAnimator.start()
-        }
-        return super.performClick()
+    fun startLoading() {
+        buttonState = ButtonState.Loading
+    }
+
+    fun stopLoading() {
+        valueAnimator.currentPlayTime = valueAnimator.duration
+        valueAnimator.pause()
+        handler.postDelayed({ buttonState = ButtonState.Completed }, 250)
     }
 
 }

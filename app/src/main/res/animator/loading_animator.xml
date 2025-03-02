@@ -4,4 +4,6 @@
     android:interpolator="@android:anim/linear_interpolator"
     android:valueFrom="0f"
     android:valueTo="100f"
-    android:valueType="floatType" />
+    android:valueType="floatType"
+    android:repeatMode="restart"
+    android:repeatCount="infinite"/>
