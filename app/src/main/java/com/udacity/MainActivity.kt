@@ -1,19 +1,24 @@
 package com.udacity
 
 import android.app.DownloadManager
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.udacity.databinding.ActivityMainBinding
+import com.udacity.util.sendNotification
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         private const val glideUrl = "https://github.com/bumptech/glide/archive/master.zip"
         private const val loadAppUrl = "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val retrofitUrl = "https://github.com/square/retrofit/archive/trunk.zip"
-        private const val CHANNEL_ID = "channelId"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +47,9 @@ class MainActivity : AppCompatActivity() {
         binding.content.customButton.setOnClickListener {
             download()
         }
+
+        notificationManager = ContextCompat.getSystemService(this, NotificationManager::class.java) as NotificationManager
+        createChannel(getString(R.string.notification_channel_id), getString(R.string.notification_channel_name))
     }
 
     private val receiver = object : BroadcastReceiver() {
@@ -58,6 +65,7 @@ class MainActivity : AppCompatActivity() {
                         val status = cursor.getInt(columnIndex)
                         if (status == DownloadManager.STATUS_SUCCESSFUL) {
                             Toast.makeText(context, "Download Complete", Toast.LENGTH_SHORT).show()
+                            notificationManager.sendNotification(getString(R.string.notification_description), context)
                         } else {
                             Toast.makeText(context, "Download Failed", Toast.LENGTH_SHORT).show()
                         }
@@ -106,6 +114,21 @@ class MainActivity : AppCompatActivity() {
             R.id.rb_load_app -> "LoadApp.zip"
             R.id.rb_retrofit -> "Retrofit.zip"
             else -> return null
+        }
+    }
+
+    private fun createChannel(channelId: String, channelName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+            notificationChannel.enableVibration(true)
+            notificationChannel.description = getString(R.string.notification_description)
+            notificationManager.createNotificationChannel(notificationChannel)
         }
     }
 
