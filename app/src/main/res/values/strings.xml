@@ -11,6 +11,11 @@
 
     <string name="button_name">Download</string>
     <string name="button_loading">We are loading </string>
+    <string name="details_button_text">OK</string>
+    <string name="detail_download_file_name">File Name: </string>
+    <string name="detail_download_status">Status: </string>
+    <string name="detail_download_status_fail">Fail</string>
+    <string name="detail_download_status_success">Success</string>
     <string name="title_activity_detail">DetailActivity</string>
 
     <string name="radio_button_glide">Glide - Image Loading Library by BumpTech</string>

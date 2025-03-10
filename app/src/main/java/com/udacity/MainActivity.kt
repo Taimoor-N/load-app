@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.udacity.databinding.ActivityMainBinding
+import com.udacity.util.Constants
 import com.udacity.util.sendNotification
 
 class MainActivity : AppCompatActivity() {
@@ -27,8 +28,7 @@ class MainActivity : AppCompatActivity() {
     private var downloadID: Long = 0
 
     private lateinit var notificationManager: NotificationManager
-    private lateinit var pendingIntent: PendingIntent
-    private lateinit var action: NotificationCompat.Action
+    private lateinit var notificationIntent: Intent
 
     companion object {
         private const val glideUrl = "https://github.com/bumptech/glide/archive/master.zip"
@@ -64,11 +64,11 @@ class MainActivity : AppCompatActivity() {
                     if (columnIndex != -1) {
                         val status = cursor.getInt(columnIndex)
                         if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                            Toast.makeText(context, "Download Complete", Toast.LENGTH_SHORT).show()
-                            notificationManager.sendNotification(getString(R.string.notification_description), context)
+                            notificationIntent = createNotificationIntent(getString(R.string.detail_download_status_success))
                         } else {
-                            Toast.makeText(context, "Download Failed", Toast.LENGTH_SHORT).show()
+                            notificationIntent = createNotificationIntent(getString(R.string.detail_download_status_fail))
                         }
+                        notificationManager.sendNotification(notificationIntent, context)
                         binding.content.customButton.stopLoading()
                     }
                 }
@@ -130,6 +130,14 @@ class MainActivity : AppCompatActivity() {
             notificationChannel.description = getString(R.string.notification_description)
             notificationManager.createNotificationChannel(notificationChannel)
         }
+    }
+
+    private fun createNotificationIntent(downloadStatus : String) : Intent {
+        val intent = Intent(this, DetailActivity::class.java).apply {
+            putExtra(Constants.INTENT_DOWNLOAD_STATUS, downloadStatus)
+            putExtra(Constants.INTENT_DOWNLOAD_FILENAME, getDownloadRepoName())
+        }
+        return intent
     }
 
 }
