@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.udacity.DetailActivity
 import com.udacity.R
 
 private const val NOTIFICATION_ID = 0
@@ -13,11 +12,11 @@ private const val NOTIFICATION_ID = 0
 fun NotificationManager.sendNotification(intent: Intent, appContext: Context) {
 
     // Intent to take user to the DetailActivity when user clicks the notification
-    val contentPendingIntent = PendingIntent.getActivity(
+    val actionPendingIntent = PendingIntent.getActivity(
         appContext,
         NOTIFICATION_ID,
         intent,
-        PendingIntent.FLAG_IMMUTABLE
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )
 
     // Build the Notification
@@ -25,7 +24,9 @@ fun NotificationManager.sendNotification(intent: Intent, appContext: Context) {
         .setSmallIcon(R.drawable.ic_download)
         .setContentTitle(appContext.getString(R.string.notification_title))
         .setContentText(appContext.getString(R.string.notification_description))
-        .setContentIntent(contentPendingIntent)
         .setAutoCancel(true)
+        .addAction(R.drawable.ic_download,
+            appContext.getString(R.string.notification_button),
+            actionPendingIntent)
     notify(NOTIFICATION_ID, builder.build())
 }

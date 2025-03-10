@@ -1,8 +1,10 @@
 package com.udacity
 
+import android.app.NotificationManager
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.udacity.databinding.ActivityDetailBinding
 import com.udacity.util.Constants
 
@@ -30,6 +32,10 @@ class DetailActivity : AppCompatActivity() {
             }
             binding.content.motionLayout.transitionToStart()
         }
+
+        // Dismiss notifications
+        val notificationManager = ContextCompat.getSystemService(this, NotificationManager::class.java) as NotificationManager
+        notificationManager.cancelAll()
 
         // Navigate to MainActivity when OK button is clicked
         binding.content.btnDetail.setOnClickListener {
